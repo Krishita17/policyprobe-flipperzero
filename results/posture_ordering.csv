@@ -1,0 +1,5 @@
+profile,iso27001,nist80053,iso27001_estate,nist80053_estate
+Known weak,25.5,18.1,55.5,49.1
+Legacy mixed,25.5,18.1,62.2,58.5
+Modernising,25.5,18.1,68.4,65.3
+Known strong,32.7,23.2,75.0,73.1

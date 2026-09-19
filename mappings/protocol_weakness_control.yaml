@@ -1,0 +1,700 @@
+# =============================================================================
+# PolicyProbe — Protocol -> Weakness -> Control mapping
+# =============================================================================
+# This file is the core contribution of the project. It is the editable knowledge
+# base that turns a physical-layer observation ("this fob is a 125 kHz EM4100 whose
+# 40-bit ID can be written to a blank T5577") into control evidence ("A.7.2 Physical
+# entry is not met at Door-03; PE-3 Physical Access Control is not met").
+#
+# Every control identifier and title below is a real, published identifier from
+# ISO/IEC 27001:2022 Annex A or NIST SP 800-53 Rev. 5. The `rationale` text is the
+# author's own analysis, not requirement text from either document.
+#
+# Author: Krishita Sanjay Choksi
+# Schema version: 1
+#
+# relation values
+#   violates : a confirmed finding of this weakness is direct evidence the control
+#              objective is NOT met at the assessed access point
+#   weakens  : the finding materially degrades the control but does not on its own
+#              prove non-conformity (compensating controls may carry it)
+#   evidence : the finding is supporting evidence an assessor records against the
+#              control, positive or negative, without being a pass/fail verdict
+#
+# base_severity  : Informational | Low | Medium | High | Critical, before exposure
+# detection      : what the Flipper front-end and the classifier actually observe
+# =============================================================================
+
+schema_version: 1
+frameworks:
+  - iso27001      # frameworks/iso27001_2022.yaml
+  - nist80053     # frameworks/nist_800_53_r5.yaml
+
+protocols:
+  rfid_lf:
+    label: "RFID 125 kHz (low frequency)"
+    flipper_app: "125 kHz RFID"
+    typical_devices: ["EM4100/EM4102", "HID Prox (H10301)", "Indala", "AWID", "T5577 (writable)"]
+  nfc_hf:
+    label: "NFC / RFID 13.56 MHz (high frequency)"
+    flipper_app: "NFC"
+    typical_devices: ["MIFARE Classic 1K/4K", "MIFARE Ultralight", "MIFARE DESFire EV1/EV2/EV3", "HID iCLASS legacy", "HID iCLASS SE / Seos", "NTAG21x"]
+  subghz:
+    label: "Sub-GHz radio (300-928 MHz ISM)"
+    flipper_app: "Sub-GHz"
+    typical_devices: ["Fixed-code OOK remote (PT2262/EV1527 class)", "KeeLoq rolling-code remote", "AES rolling-code remote", "Gate/barrier receiver"]
+  ir:
+    label: "Infrared"
+    flipper_app: "Infrared"
+    typical_devices: ["IR-controlled barrier/turnstile release", "IR-controlled AV/environmental device in a secure area"]
+  ibutton:
+    label: "iButton / 1-Wire contact key"
+    flipper_app: "iButton"
+    typical_devices: ["DS1990A", "Cyfral", "Metakom"]
+
+# -----------------------------------------------------------------------------
+# Weakness catalogue
+# -----------------------------------------------------------------------------
+weaknesses:
+
+  - id: W-STATIC-ID
+    title: "Static, non-authenticating credential identifier"
+    protocols: [rfid_lf, nfc_hf, ibutton]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The credential presents a fixed identifier and performs no challenge-response. Anything that
+      can read the identifier once can reproduce it indefinitely on writable blank media. Possession
+      of the physical token is not required to present the credential.
+    detection: >-
+      Read the credential twice and compare: an identical payload across reads, with no nonce and no
+      reader-supplied challenge in the exchange, marks the credential static. The classifier
+      corroborates with device-type identification (EM4100, DS1990A, MIFARE UID-only reads).
+    exploitability: "Trivial. Single passive read; commodity writable media."
+    iso27001:
+      - {id: "A.7.2",  relation: violates, rationale: "Entry control cannot restrict entry to authorised personnel when the credential distinguishing them is freely reproducible from a passive read."}
+      - {id: "A.8.5",  relation: violates, rationale: "Presenting a static identifier is identification, not authentication; there is no secret and no proof of possession."}
+      - {id: "A.5.16", relation: weakens,  rationale: "Unique attribution of an entry event to an identity fails once the identifier can exist on any number of tokens."}
+      - {id: "A.8.8",  relation: evidence, rationale: "A publicly documented, unremediated weakness in a deployed technology belongs in the technical vulnerability register."}
+    nist80053:
+      - {id: "PE-3",   relation: violates, rationale: "Verification of individual access authorisation is defeated: the reader verifies a number, not a person or a token it trusts."}
+      - {id: "IA-3",   relation: violates, rationale: "The credential device is never authenticated before the access transaction completes."}
+      - {id: "AC-3",   relation: violates, rationale: "Access enforcement rests on a value any reader in the world can capture and any blank can carry."}
+      - {id: "IA-2",   relation: weakens,  rationale: "Unique user authentication is undermined where the sole factor is a copyable identifier."}
+      - {id: "RA-5",   relation: evidence, rationale: "Recorded as a scanned and confirmed vulnerability of the physical access system."}
+    remediation:
+      summary: "Migrate to a credential that performs mutual cryptographic authentication; treat legacy IDs as identifiers only, never as authenticators."
+      steps:
+        - "Inventory every access point still accepting the static technology and rank by zone sensitivity."
+        - "Replace with a credential providing challenge-response over a standard cipher (e.g. DESFire EV2/EV3 AES, Seos, PIV/CAK per NIST SP 800-116r1)."
+        - "During migration, add a second factor (PIN or biometric) at Restricted and Secure zones rather than leaving possession-only."
+        - "Disable acceptance of the legacy format at the reader as soon as each zone's population is cut over."
+      priority: P1
+      effort: High
+    references:
+      - "EM Microelectronic, EM4100 Read-Only Contactless Identification Device, product datasheet (40-bit read-only identifier)."
+      - "Maxim Integrated, DS1990A Serial Number iButton datasheet (64-bit ROM, no authentication)."
+      - "NIST SP 800-116 Rev. 1, Guidelines for the Use of PIV Credentials in Facility Access, 2018."
+
+  - id: W-NO-CRYPTO
+    title: "No cryptographic authentication in the credential exchange"
+    protocols: [rfid_lf, nfc_hf, ibutton, subghz, ir]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The access transaction contains no cryptographic operation at all — no key, no nonce, no MAC.
+      Authorisation is decided purely on a transmitted pattern, so the channel offers no defence
+      against capture, reproduction or fabrication of a valid transaction.
+    detection: >-
+      Capture the full transaction and confirm it is constant across attempts and contains no
+      variable field. The classifier's weak-scheme head flags exchanges with zero inter-read entropy
+      in the variable positions.
+    exploitability: "Trivial to Easy. Capture once, retransmit."
+    iso27001:
+      - {id: "A.8.5",  relation: violates, rationale: "Secure authentication requires an authentication mechanism; a bare pattern transmission has none."}
+      - {id: "A.7.2",  relation: violates, rationale: "The entry decision is made on data with no integrity or origin protection."}
+      - {id: "A.8.8",  relation: evidence, rationale: "Absence of cryptography in an access-relevant channel is a standing technical vulnerability."}
+    nist80053:
+      - {id: "SC-13",  relation: violates, rationale: "Cryptographic protection is required where access decisions depend on the channel; none is implemented."}
+      - {id: "SC-8",   relation: violates, rationale: "Transmitted credential information has neither confidentiality nor integrity protection."}
+      - {id: "PE-3",   relation: violates, rationale: "Physical access control is enforced on unauthenticated data."}
+      - {id: "IA-3",   relation: violates, rationale: "No device authentication precedes the connection."}
+    remediation:
+      summary: "Replace the technology at security-relevant boundaries; where replacement is deferred, add an independent factor that is not carried on the same channel."
+      steps:
+        - "Restrict the unauthenticated technology to non-security boundaries (e.g. amenity doors) and record the acceptance decision."
+        - "Deploy an authenticated credential technology at every boundary above General sensitivity."
+        - "Where a gate or barrier cannot be replaced quickly, pair it with a logged, authenticated secondary control (guard verification, video-verified release)."
+      priority: P1
+      effort: High
+    references:
+      - "NIST SP 800-53 Rev. 5, SC-13 and IA-3 control statements."
+      - "ISO/IEC 14443 (contactless cards) and the vendor security guidance for the specific product generation in use."
+
+  - id: W-BROKEN-CRYPTO
+    title: "Deprecated or academically broken proprietary cipher"
+    protocols: [nfc_hf, subghz]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The credential does perform cryptographic authentication, but with a proprietary algorithm that
+      has been publicly broken. Practical key-recovery attacks exist and are implemented in freely
+      available tooling, so the cryptography raises the cost of attack without preventing it.
+    detection: >-
+      Identify the product generation from its ATQA/SAK signature, protocol timing and command set
+      (MIFARE Classic Crypto1, legacy iCLASS, KeeLoq). The classifier maps the identified generation
+      to a known-broken-cipher list carried in this file's `broken_cipher_generations` section.
+    exploitability: "Moderate. Published attacks, public tooling, minutes to hours of contact."
+    iso27001:
+      - {id: "A.8.5",  relation: violates, rationale: "An authentication mechanism with published practical key recovery is not secure authentication for the asset class it gates."}
+      - {id: "A.8.8",  relation: violates, rationale: "A known, published vulnerability in a deployed technology remains unremediated."}
+      - {id: "A.7.13", relation: weakens,  rationale: "Continued operation of a superseded product generation is a maintenance-currency failure."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control is degraded but not absent; attack requires effort and proximity."}
+    nist80053:
+      - {id: "SC-13",  relation: violates, rationale: "The algorithm in use does not meet applicable cryptographic standards for the protection required."}
+      - {id: "PE-3",   relation: weakens,  rationale: "Access control still resists casual attack but not a prepared one."}
+      - {id: "RA-5",   relation: violates, rationale: "A discovered vulnerability with available remediation has not been remediated within any reasonable timeframe."}
+      - {id: "CM-6",   relation: evidence, rationale: "Reader configuration continues to permit the deprecated generation."}
+    remediation:
+      summary: "Cut over to the vendor's current secure generation and disable the broken generation at the reader."
+      steps:
+        - "Confirm the exact product generation per reader; mixed estates are common."
+        - "Issue replacement credentials on a current AES-based generation."
+        - "Disable legacy-format acceptance at the reader, not only at the credential — otherwise the old cards keep working."
+        - "Record the cutover date per access point as remediation evidence."
+      priority: P1
+      effort: Medium
+    references:
+      - "Garcia et al., Dismantling MIFARE Classic, ESORICS 2008."
+      - "Garcia, de Koning Gans, Muijrers, van Rossum, Verdult, Schreur, Jacobs, Wirelessly Pickpocketing a MIFARE Classic Card, IEEE S&P 2009."
+      - "Courtois, The Dark Side of Security by Obscurity, SECRYPT 2009."
+      - "Garcia, de Koning Gans, Verdult, Meriac, Dismantling iClass and iClass Elite, ESORICS 2012."
+      - "Bogdanov, Attacks on the KeeLoq Block Cipher and Authentication Systems, RFIDSec 2007."
+      - "Indesteege, Keller, Dunkelman, Biham, Preneel, A Practical Attack on KeeLoq, EUROCRYPT 2008."
+
+  - id: W-DEFAULT-KEYS
+    title: "Factory-default or publicly published sector keys in use"
+    protocols: [nfc_hf]
+    base_severity: Critical
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The credential's application data is protected by keys that were never changed from the
+      manufacturer default, or that appear on public default-key lists shipped with common tooling.
+      The cryptography is intact; the secret is not secret.
+    detection: >-
+      Attempt authentication against the standard default-key dictionary in read-only mode. A
+      successful authentication with a dictionary key is the finding; no key cracking is performed.
+    exploitability: "Trivial. Seconds, with a stock key list."
+    iso27001:
+      - {id: "A.5.17", relation: violates, rationale: "Authentication information was not changed from the default at issue and is publicly known."}
+      - {id: "A.8.5",  relation: violates, rationale: "Authentication with a publicly known secret provides no assurance."}
+      - {id: "A.7.2",  relation: violates, rationale: "Entry control is defeated by anyone with the credential's published default key."}
+      - {id: "A.8.8",  relation: violates, rationale: "A trivially remediable known weakness remains in production."}
+    nist80053:
+      - {id: "IA-5",   relation: violates, rationale: "Authenticator management requires changing default content of authenticators before use; it was not done."}
+      - {id: "CM-6",   relation: violates, rationale: "The deployed configuration deviates from any secure baseline by retaining vendor defaults."}
+      - {id: "PE-3",   relation: violates, rationale: "Physical access enforcement is bypassable with public information."}
+      - {id: "SC-13",  relation: weakens,  rationale: "The algorithm is adequate; key management defeats it."}
+    remediation:
+      summary: "Rotate all sector keys to site-unique diversified values and re-encode the estate; do not reuse one site key across all credentials."
+      steps:
+        - "Generate per-credential diversified keys from a site master held in a key management system, not a spreadsheet."
+        - "Re-encode issued credentials and update reader key sets in the same maintenance window."
+        - "Add default-key testing to the periodic access-control review so recurrence is detected."
+      priority: P0
+      effort: Medium
+    references:
+      - "NIST SP 800-53 Rev. 5, IA-5 Authenticator Management."
+      - "Vendor key-management guidance for the specific contactless product family in use."
+
+  - id: W-FIXED-CODE-RF
+    title: "Fixed-code sub-GHz transmitter (no rolling code)"
+    protocols: [subghz]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The remote transmits the same code on every press. A receiver accepts any transmission carrying
+      that code, so a single capture from a distance grants repeatable access to the gate, barrier or
+      roller door it controls.
+    detection: >-
+      Capture two or more presses and compare the decoded payload. Identical payloads across presses,
+      typically in a known fixed-code encoder format, confirm the finding.
+    exploitability: "Trivial. Capture at range, retransmit at will."
+    iso27001:
+      - {id: "A.7.2",  relation: violates, rationale: "A vehicle gate or roller door is an access point to a secure area; a replayable opener means it admits anyone who has listened once."}
+      - {id: "A.7.1",  relation: violates, rationale: "The security perimeter has an opening that can be commanded from outside it."}
+      - {id: "A.8.5",  relation: violates, rationale: "No authentication of the transmitter takes place."}
+      - {id: "A.7.4",  relation: weakens,  rationale: "Such openings are commonly unmonitored, so the bypass also leaves no detection trail."}
+    nist80053:
+      - {id: "PE-3",   relation: violates, rationale: "An access point is operable without any verification of authorisation."}
+      - {id: "PE-16",  relation: violates, rationale: "Delivery and loading areas controlled by fixed-code openers are neither authorised nor controlled in practice."}
+      - {id: "SC-8",   relation: violates, rationale: "The command transmission has no integrity or replay protection."}
+      - {id: "AC-3",   relation: violates, rationale: "Approved authorisations are not enforced at this access point."}
+      - {id: "PE-6",   relation: weakens,  rationale: "Openings via a standalone receiver typically generate no monitored event."}
+    remediation:
+      summary: "Replace fixed-code receivers with authenticated rolling-code or credentialled access; log every gate operation to the access control platform."
+      steps:
+        - "Replace the receiver and remotes with an AES-based rolling-code product, or move the gate onto the badge system with a vehicle reader."
+        - "Wire gate open events into the access control platform so they appear in the same log as door events."
+        - "Add video coverage of vehicle entry points to compensate during the replacement window."
+      priority: P1
+      effort: Medium
+    references:
+      - "Kamkar, Drive It Like You Hacked It: New Attacks and Tools to Wirelessly Steal Cars, DEF CON 23, 2015."
+      - "Encoder datasheets for the common fixed-code OOK remote families (PT2262 / EV1527 class)."
+
+  - id: W-ROLLING-REPLAY
+    title: "Rolling code defeatable by jam-and-replay or counter desynchronisation"
+    protocols: [subghz]
+    base_severity: Medium
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The remote implements a rolling counter, but the receiver's acceptance window and the absence of
+      a challenge from the receiver allow a captured-but-unused future code to be replayed, or the
+      counter to be manipulated. The rolling code raises cost but does not close the channel.
+    detection: >-
+      Identify the encoder family and verify counter behaviour across sequential presses. PolicyProbe
+      records the family and the acceptance-window exposure; it does not perform jamming, which is
+      both out of scope and generally unlawful.
+    exploitability: "Moderate. Requires presence at the time of a legitimate press."
+    iso27001:
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control holds against casual replay but not against a prepared capture during legitimate use."}
+      - {id: "A.8.5",  relation: weakens,  rationale: "Authentication is one-way and counter-based rather than challenge-response."}
+      - {id: "A.8.8",  relation: evidence, rationale: "A known class weakness of the encoder family, to be tracked even where risk is accepted."}
+    nist80053:
+      - {id: "PE-3",   relation: weakens,  rationale: "Access verification can be circumvented under specific conditions rather than at will."}
+      - {id: "SC-8",   relation: weakens,  rationale: "Replay protection exists but is incomplete."}
+      - {id: "PE-6",   relation: evidence, rationale: "Detection depends entirely on monitoring, since prevention is partial."}
+    remediation:
+      summary: "Prefer receivers with challenge-response or AES-based bidirectional authentication; monitor gate events for out-of-sequence opens."
+      steps:
+        - "Specify bidirectional, challenge-response openers in the next refresh cycle."
+        - "Enable and review out-of-sequence / counter-jump alerts where the receiver supports them."
+        - "Do not rely on rolling code alone at Restricted or Secure vehicle entrances."
+      priority: P2
+      effort: Medium
+    references:
+      - "Garcia, Oswald, Kasper, Pavlidès, Lock It and Still Lose It: On the (In)Security of Automotive Remote Keyless Entry Systems, USENIX Security 2016."
+      - "Kamkar, RollJam, DEF CON 23, 2015."
+
+  - id: W-SEQUENTIAL-ID
+    title: "Sequential or low-entropy identifier allocation"
+    protocols: [rfid_lf, nfc_hf, ibutton]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      Credential identifiers across the issued population are consecutive or follow a predictable
+      pattern. One sampled credential discloses the identifier space, so valid credentials for other
+      holders can be derived without ever reading theirs.
+    detection: >-
+      Compare identifiers across the sampled credential set. The classifier flags low first-difference
+      variance and shared high-order bytes across a sample as a sequential allocation signature.
+    exploitability: "Easy where the reader accepts the derived identifier; one sample is enough to infer neighbours."
+    iso27001:
+      - {id: "A.5.16", relation: violates, rationale: "Identity management fails when another person's identifier can be computed rather than obtained."}
+      - {id: "A.7.2",  relation: violates, rationale: "Entry control admits derived credentials that were never issued to the bearer."}
+      - {id: "A.5.15", relation: weakens,  rationale: "Need-to-know access rules are unenforceable when identifiers are guessable across the estate."}
+    nist80053:
+      - {id: "PE-2",   relation: violates, rationale: "The authorisation list cannot be the effective control when identifiers outside a holder's issue are derivable."}
+      - {id: "AC-2",   relation: violates, rationale: "One-account-per-person integrity fails where account identifiers are predictable and forgeable."}
+      - {id: "PE-3",   relation: violates, rationale: "Verification of authorisation is bypassable by enumeration."}
+      - {id: "IA-2",   relation: weakens,  rationale: "The identifier cannot serve as a unique authenticator."}
+    remediation:
+      summary: "Re-issue with randomly allocated identifiers from the full available namespace, and rate-limit or alarm on repeated rejected reads."
+      steps:
+        - "Switch the issuing system from sequential to random allocation within the namespace."
+        - "Re-issue credentials in sensitivity order, highest zones first."
+        - "Alarm on consecutive rejected-credential events at a reader, which is the enumeration signature."
+      priority: P1
+      effort: Medium
+    references:
+      - "SIA AC-01-1996.10, Access Control — Wiegand interface standard (26-bit format field layout)."
+
+  - id: W-SMALL-NAMESPACE
+    title: "Identifier namespace too small for the credential population"
+    protocols: [rfid_lf, nfc_hf]
+    base_severity: Medium
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The credential format provides too few identifier bits for the size of the estate, so identifiers
+      collide across sites or are exhaustively searchable. The 26-bit Wiegand format, with an 8-bit
+      facility code and a 16-bit card number, is the canonical example.
+    detection: >-
+      Derive the format from the bit length and parity structure of the decoded credential and compare
+      the namespace size against the reported population and site count.
+    exploitability: "Moderate. Exhaustive search is feasible against a permissive reader; cross-site collisions occur naturally."
+    iso27001:
+      - {id: "A.5.16", relation: weakens,  rationale: "Unique attribution cannot be guaranteed where the namespace permits collisions between holders or sites."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control admits a credential legitimately issued at another site sharing the facility code."}
+      - {id: "A.8.8",  relation: evidence, rationale: "A structural format limitation to record and plan out of."}
+    nist80053:
+      - {id: "IA-2",   relation: weakens,  rationale: "Unique identification is not assured across the population."}
+      - {id: "AC-2",   relation: weakens,  rationale: "Distinct records can map to colliding credential values."}
+      - {id: "PE-3",   relation: weakens,  rationale: "Enforcement quality degrades as the population approaches namespace size."}
+    remediation:
+      summary: "Move to a large-namespace, site-unique credential format and retire shared facility codes."
+      steps:
+        - "Adopt a format with a site-unique issuer namespace rather than a shared facility code."
+        - "Confirm the new format's namespace exceeds projected population by several orders of magnitude."
+        - "Alarm on rejected-credential bursts to detect enumeration during the transition."
+      priority: P2
+      effort: Medium
+    references:
+      - "SIA AC-01-1996.10, Access Control — Wiegand interface standard."
+      - "NIST SP 800-116 Rev. 1, Section on credential identifier uniqueness in facility access."
+
+  - id: W-NO-MUTUAL-AUTH
+    title: "Reader is not authenticated to the credential"
+    protocols: [nfc_hf, rfid_lf]
+    base_severity: Medium
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      Authentication is one-way: the credential proves something to the reader, but the reader proves
+      nothing to the credential. Any device presenting as a reader can solicit the credential's
+      response, which enables skimming at a distance and relay of live transactions.
+    detection: >-
+      Observe whether the credential requires reader-side proof before responding, and whether the
+      exchange includes a credential-issued challenge.
+    exploitability: "Moderate. Requires proximity to the holder or a relay pair."
+    iso27001:
+      - {id: "A.8.5",  relation: weakens,  rationale: "One-way authentication leaves the holder's credential solicitable by an unauthorised reader."}
+      - {id: "A.7.9",  relation: weakens,  rationale: "The credential is an asset carried off premises with no protection against remote solicitation."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control can be exercised with data harvested away from the access point."}
+    nist80053:
+      - {id: "IA-3",   relation: weakens,  rationale: "Device authentication is unidirectional; the reader end is unauthenticated."}
+      - {id: "SC-8",   relation: weakens,  rationale: "Credential data can be elicited and relayed without integrity binding to the session."}
+      - {id: "PE-3",   relation: weakens,  rationale: "Authorisation verification can be driven by captured rather than presented data."}
+    remediation:
+      summary: "Require mutual authentication and add shielding for high-sensitivity holders."
+      steps:
+        - "Select credential products performing mutual authentication with session-bound keys."
+        - "Issue shielded holders to staff carrying Secure-zone credentials."
+        - "Where supported, enable transaction timing limits that make relay impractical."
+      priority: P2
+      effort: Low
+    references:
+      - "Garcia et al., Wirelessly Pickpocketing a MIFARE Classic Card, IEEE S&P 2009."
+      - "NIST SP 800-116 Rev. 1, Guidelines for the Use of PIV Credentials in Facility Access."
+
+  - id: W-WIRE-CLEARTEXT
+    title: "Credential data traverses reader-to-controller wiring unauthenticated"
+    protocols: [rfid_lf, nfc_hf]
+    base_severity: High
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      Even where the over-the-air credential is strong, the reader forwards the decoded credential to
+      the door controller over an unauthenticated, unencrypted interface. The Wiegand interface carries
+      the credential in the clear with no reader authentication, so a tap placed on the wiring behind
+      the reader — on the unsecure side of the door — captures and injects credentials.
+    detection: >-
+      Determined from the reader-to-controller interface recorded in the access point inventory
+      (Wiegand vs OSDP, and whether OSDP Secure Channel is enabled), corroborated by physical inspection
+      of reader mounting and tamper state. This is an inventory and inspection finding, not an RF read.
+    exploitability: "Moderate. Requires brief physical access to the reader body."
+    iso27001:
+      - {id: "A.7.12", relation: violates, rationale: "Cabling carrying credential data is not protected from interception or injection at a point reachable from the unsecure side."}
+      - {id: "A.7.2",  relation: violates, rationale: "Entry control is bypassable at the wiring behind the reader regardless of credential strength."}
+      - {id: "A.8.5",  relation: weakens,  rationale: "A strong credential exchange is nullified downstream of the reader."}
+      - {id: "A.7.4",  relation: weakens,  rationale: "Without tamper reporting, the tap is not detected."}
+    nist80053:
+      - {id: "PE-4",   relation: violates, rationale: "Physical access to the transmission line carrying access data is not controlled."}
+      - {id: "SC-8",   relation: violates, rationale: "The reader-to-controller transmission has no confidentiality or integrity protection."}
+      - {id: "PE-3",   relation: violates, rationale: "Access enforcement can be driven directly by injection downstream of credential verification."}
+      - {id: "PE-3(5)", relation: weakens, rationale: "Tamper protection on the reader assembly is the compensating control and is typically absent."}
+    remediation:
+      summary: "Migrate reader-to-controller communications to OSDP with Secure Channel enabled, and enforce reader tamper reporting."
+      steps:
+        - "Replace Wiegand with OSDP (SIA OSDP / IEC 60839-11-5) and enable Secure Channel — OSDP without Secure Channel does not solve this."
+        - "Verify that reader tamper switches are wired, enabled and alarmed at the monitoring point."
+        - "Where the reader must stay on Wiegand, relocate the controller-side termination to the secure side and use tamper-evident mounting."
+      priority: P1
+      effort: Medium
+    references:
+      - "SIA OSDP (Open Supervised Device Protocol) v2.2 and IEC 60839-11-5, including Secure Channel."
+      - "Antoniewicz and Knight, Outsmarting the Smart City / BLEKey work on Wiegand interception, Black Hat USA 2015."
+
+  - id: W-NO-TAMPER
+    title: "Reader has no tamper detection or no reporting path for tamper events"
+    protocols: [rfid_lf, nfc_hf, subghz, ir, ibutton]
+    base_severity: Medium
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The reader or receiver can be removed, opened or substituted without generating an alarm. This is
+      the compensating control for most wiring and substitution attacks; where it is absent, those
+      attacks leave no trace.
+    detection: "Inventory and physical inspection: presence of a tamper switch, and whether its state is supervised at the controller."
+    exploitability: "Enabling weakness rather than a direct bypass."
+    iso27001:
+      - {id: "A.7.4",  relation: violates, rationale: "Continuous monitoring for unauthorised physical access does not extend to interference with the access hardware itself."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control hardware can be manipulated without detection."}
+      - {id: "A.8.16", relation: weakens,  rationale: "No anomalous-behaviour signal is generated by hardware interference."}
+    nist80053:
+      - {id: "PE-3(5)", relation: violates, rationale: "Tamper protection or detection is not employed on the access hardware."}
+      - {id: "PE-6",   relation: weakens,  rationale: "Monitoring of physical access does not cover attacks on the monitoring and control devices."}
+      - {id: "SI-4",   relation: weakens,  rationale: "The system generates no indicator for this attack class."}
+    remediation:
+      summary: "Enable and supervise tamper switches on every reader and receiver; alarm tamper to a monitored destination."
+      steps:
+        - "Audit every access point for a wired, enabled tamper switch."
+        - "Confirm tamper events reach a monitored console, not just a local log."
+        - "Include tamper-state verification in routine maintenance rounds."
+      priority: P2
+      effort: Low
+    references:
+      - "NIST SP 800-53 Rev. 5, PE-3(5) Tamper Protection."
+
+  - id: W-NO-EVENT-LOG
+    title: "Access point produces no retained access event record"
+    protocols: [rfid_lf, nfc_hf, subghz, ir, ibutton]
+    base_severity: Medium
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The access point operates standalone — a local keypad, an autonomous gate receiver, a mechanical
+      override — and produces no event that reaches the access control platform. Entries through it are
+      invisible to review and to incident investigation.
+    detection: "Inventory attribute: whether the access point is integrated with the access control platform and retains events."
+    exploitability: "Not an entry bypass; it removes detection and attribution after the fact."
+    iso27001:
+      - {id: "A.8.15", relation: violates, rationale: "No log is produced for a security-relevant activity."}
+      - {id: "A.7.4",  relation: violates, rationale: "Unauthorised access through this point cannot be detected by monitoring."}
+      - {id: "A.8.16", relation: weakens,  rationale: "There is nothing to analyse for anomalous behaviour at this point."}
+    nist80053:
+      - {id: "AU-2",   relation: violates, rationale: "The access point is not capable of logging the events the organisation needs logged."}
+      - {id: "PE-6",   relation: violates, rationale: "Physical access at this point is not monitored."}
+      - {id: "PE-8",   relation: weakens,  rationale: "Visitor movement through unlogged points cannot be reconstructed from records."}
+      - {id: "AU-6",   relation: weakens,  rationale: "No records exist to review for this access point."}
+    remediation:
+      summary: "Integrate standalone access points into the access control platform, or compensate with monitored video and documented risk acceptance."
+      steps:
+        - "List every standalone access point and classify by the sensitivity of what it reaches."
+        - "Integrate Restricted and Secure points first; retain events for the defined period."
+        - "Where integration is not feasible, install monitored video with retention matching the log policy and record the acceptance."
+      priority: P2
+      effort: Medium
+    references:
+      - "NIST SP 800-53 Rev. 5, AU-2 Event Logging and PE-6 Monitoring Physical Access."
+
+  - id: W-NO-REVOCATION
+    title: "Credential cannot be expired or revoked at the credential layer"
+    protocols: [rfid_lf, nfc_hf, ibutton, subghz]
+    base_severity: Medium
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The credential carries no expiry and no cryptographic binding that can be invalidated; revocation
+      depends entirely on removing the identifier from the controller's allow list. Where any access
+      point is standalone or the credential is duplicable, revocation is ineffective.
+    detection: "Derived from the identified credential technology: read-only static identifiers have no revocable element."
+    exploitability: "Materialises at leaver events and after credential loss."
+    iso27001:
+      - {id: "A.5.18", relation: violates, rationale: "Access rights cannot be reliably removed when the credential itself carries nothing revocable and copies may exist."}
+      - {id: "A.5.16", relation: weakens,  rationale: "The identity life cycle has no technical termination step."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "A former holder's copy remains valid at any point not covered by the allow-list update."}
+    nist80053:
+      - {id: "PE-2",   relation: violates, rationale: "Removal of individuals from facility access cannot be enforced against copies already made."}
+      - {id: "IA-5",   relation: violates, rationale: "Authenticator revocation and refresh are not supported by the authenticator."}
+      - {id: "AC-2",   relation: weakens,  rationale: "Account disablement does not fully remove the access path."}
+    remediation:
+      summary: "Adopt credentials supporting expiry and cryptographic revocation; verify leaver revocation end to end, including standalone points."
+      steps:
+        - "Require a credential expiry date field in the issuing standard and set it for contractors and visitors."
+        - "Test revocation at every access point class during the periodic review, not just at the main entrance."
+        - "Reconcile the credential inventory against HR leaver records on a defined cycle."
+      priority: P2
+      effort: Medium
+    references:
+      - "NIST SP 800-116 Rev. 1, on credential expiration and revalidation in facility access."
+
+  - id: W-SHARED-CREDENTIAL
+    title: "Non-attributable shared or pooled credential in use"
+    protocols: [rfid_lf, nfc_hf, subghz, ibutton]
+    base_severity: Medium
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      A single credential value, or a pool of identical credentials, is used by multiple people —
+      contractor fobs, visitor badges, a shared gate remote. Entry events cannot be attributed to an
+      individual, which removes accountability from every downstream process.
+    detection: "Duplicate identifiers observed across sampled credentials, or inventory records showing pooled issue."
+    exploitability: "Not a bypass; it destroys attribution."
+    iso27001:
+      - {id: "A.5.16", relation: violates, rationale: "Identities are not unique to a single person, which is the core requirement of identity management."}
+      - {id: "A.5.18", relation: weakens,  rationale: "Rights cannot be adjusted per person when the credential is shared."}
+      - {id: "A.8.15", relation: weakens,  rationale: "Logs record the credential, not the individual, so the log's evidential value collapses."}
+    nist80053:
+      - {id: "AC-2",   relation: violates, rationale: "Shared accounts without individual attribution contravene account management requirements."}
+      - {id: "IA-2",   relation: violates, rationale: "Users are not uniquely identified and authenticated."}
+      - {id: "PE-2",   relation: weakens,  rationale: "The authorisation list cannot map an entry to a named authorised individual."}
+      - {id: "PE-8",   relation: violates, rationale: "Visitor records cannot tie an entry event to a specific visitor."}
+    remediation:
+      summary: "Issue individually attributable credentials including to contractors and visitors; retire pooled credentials."
+      steps:
+        - "Replace pooled contractor and visitor credentials with per-person, time-bounded issue."
+        - "Where a shared remote is operationally necessary, log the holder of record and rotate on handover."
+        - "Reconcile issued-credential records to named individuals at each review cycle."
+      priority: P2
+      effort: Low
+    references:
+      - "NIST SP 800-53 Rev. 5, AC-2 Account Management and PE-8 Visitor Access Records."
+
+  - id: W-SINGLE-FACTOR-HIGH
+    title: "Single-factor possession-only credential at a high-sensitivity boundary"
+    protocols: [rfid_lf, nfc_hf, subghz, ibutton]
+    base_severity: High
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      Access to a Restricted or Secure zone — server room, comms room, records store — is granted on
+      presentation of a token alone. Anyone obtaining or reproducing the token obtains the access,
+      with no second factor to interrupt the chain.
+    detection: "Inventory attribute: authentication factors required at the access point, evaluated against the zone sensitivity."
+    exploitability: "Depends on the credential; compounds every credential weakness above."
+    iso27001:
+      - {id: "A.8.5",  relation: violates, rationale: "Authentication strength is not appropriate to the classification of the assets behind the boundary."}
+      - {id: "A.7.3",  relation: violates, rationale: "Physical security applied to the room is not commensurate with its sensitivity."}
+      - {id: "A.7.2",  relation: weakens,  rationale: "Entry control exists but rests on a single reproducible factor."}
+      - {id: "A.5.15", relation: weakens,  rationale: "Need-to-use restriction is only as strong as the single factor enforcing it."}
+    nist80053:
+      - {id: "IA-2",   relation: violates, rationale: "Multi-factor authentication is expected where risk warrants; a high-sensitivity space warrants it."}
+      - {id: "PE-3(1)", relation: violates, rationale: "Access to spaces containing system components is not enforced beyond the facility-level factor."}
+      - {id: "PE-3",   relation: weakens,  rationale: "Enforcement exists but with a single reproducible factor."}
+      - {id: "PE-6(4)", relation: evidence, rationale: "Assessor should confirm whether monitoring of these interior spaces compensates."}
+    remediation:
+      summary: "Require a second factor at Restricted and Secure boundaries — PIN, biometric, or supervised entry."
+      steps:
+        - "Classify zones and set a minimum factor count per class in the physical access standard."
+        - "Deploy reader-with-keypad or biometric at Secure zones first."
+        - "Where a second factor is not yet deployed, require escorted entry and log it."
+      priority: P1
+      effort: Medium
+    references:
+      - "NIST SP 800-116 Rev. 1, on selecting authentication mechanisms by facility security area."
+      - "NIST SP 800-53 Rev. 5, IA-2 and PE-3(1)."
+
+  - id: W-IR-UNAUTH-CTRL
+    title: "Security-relevant device controllable by unauthenticated infrared command"
+    protocols: [ir]
+    base_severity: Medium
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      A device with a security consequence — a turnstile or barrier release, a door operator, or an
+      environmental or AV device inside a secure area — accepts consumer IR commands with no
+      authentication. IR needs line of sight but no credential, and common command sets are published.
+    detection: >-
+      Identify the device's IR protocol and confirm it responds to a replayed capture of its own
+      command. PolicyProbe records responsiveness only; it does not brute-force command spaces.
+    exploitability: "Easy where line of sight exists, including through glazing."
+    iso27001:
+      - {id: "A.7.2",  relation: weakens,  rationale: "Where the device releases a barrier, entry control is commandable without a credential."}
+      - {id: "A.7.3",  relation: weakens,  rationale: "Devices inside a secure room are operable from outside it where line of sight exists."}
+      - {id: "A.8.5",  relation: violates, rationale: "The command channel performs no authentication of the sender."}
+    nist80053:
+      - {id: "PE-3",   relation: weakens,  rationale: "An access-relevant actuator responds without authorisation verification."}
+      - {id: "AC-3",   relation: weakens,  rationale: "Authorisations are not enforced on this control path."}
+      - {id: "SC-8",   relation: weakens,  rationale: "The command channel has no integrity protection."}
+      - {id: "PE-18",  relation: evidence, rationale: "Component siting determines whether line of sight from outside the boundary exists at all."}
+    remediation:
+      summary: "Remove IR control from security-relevant actuators; where the device must keep IR, block line of sight from outside the boundary."
+      steps:
+        - "Disable the IR receiver on any device that can release a barrier."
+        - "Reposition or shield devices so no external line of sight into the secure area exists."
+        - "Treat IR-commandable releases as an access point in the inventory, not as building services."
+      priority: P3
+      effort: Low
+    references:
+      - "NIST SP 800-53 Rev. 5, PE-18 Location of System Components."
+
+  - id: W-LEGACY-EOL
+    title: "End-of-life credential or reader generation with no vendor security maintenance"
+    protocols: [rfid_lf, nfc_hf, ibutton]
+    base_severity: Medium
+    source: inventory   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      The deployed product generation is past end of sale or end of support. No firmware fixes will be
+      issued, and newly published weaknesses in that generation will remain permanently unremediated.
+    detection: "Identified product generation checked against the vendor life-cycle status recorded in the inventory."
+    exploitability: "Indirect; the risk is that it never improves."
+    iso27001:
+      - {id: "A.7.13", relation: violates, rationale: "Equipment is not maintained in a state where its security properties can be preserved."}
+      - {id: "A.8.8",  relation: violates, rationale: "Technical vulnerabilities in this generation cannot be remediated by any available means."}
+      - {id: "A.5.15", relation: evidence, rationale: "Informs whether access rules can be technically enforced going forward."}
+    nist80053:
+      - {id: "RA-5",   relation: violates, rationale: "Discovered vulnerabilities cannot be remediated within any defined timeframe on unsupported product."}
+      - {id: "CM-6",   relation: weakens,  rationale: "A secure baseline cannot be maintained on unsupported firmware."}
+      - {id: "PE-3",   relation: evidence, rationale: "Recorded against the access point so the refresh is planned rather than reactive."}
+    remediation:
+      summary: "Put the estate on a dated refresh plan; do not extend unsupported generations into new zones."
+      steps:
+        - "Record vendor life-cycle status as a mandatory field in the access point inventory."
+        - "Budget replacement before end of support, prioritised by zone sensitivity."
+        - "Prohibit new installations of the unsupported generation by policy."
+      priority: P2
+      effort: High
+    references:
+      - "Vendor product life-cycle bulletins for the reader and credential families in use."
+
+  - id: W-MIXED-MODE
+    title: "Reader accepts a legacy insecure format alongside the secure format"
+    protocols: [nfc_hf, rfid_lf]
+    base_severity: High
+    source: rf_probe   # rf_probe = observed by the Flipper front-end; inventory = derived from access point attributes
+    description: >-
+      A migration deployed new secure credentials but left legacy format acceptance enabled at the
+      reader so old cards keep working. The estate's effective security is that of the weakest format
+      the reader still accepts, so the migration delivers no risk reduction until legacy is disabled.
+    detection: >-
+      Present credentials of each format class at the reader and record which are accepted. The finding
+      is the acceptance of the legacy format, not any attack on the secure one.
+    exploitability: "Same as the legacy format it still accepts."
+    iso27001:
+      - {id: "A.8.5",  relation: violates, rationale: "The effective authentication strength is the weakest accepted format, not the strongest issued one."}
+      - {id: "A.7.2",  relation: violates, rationale: "Entry control still admits the weak credential class the migration was meant to eliminate."}
+      - {id: "A.8.8",  relation: violates, rationale: "The known weakness remains exploitable despite available remediation."}
+      - {id: "A.5.37", relation: evidence, rationale: "Indicates the migration procedure has no documented legacy-disablement step."}
+    nist80053:
+      - {id: "CM-6",   relation: violates, rationale: "Reader configuration deviates from the intended secure baseline by retaining legacy acceptance."}
+      - {id: "PE-3",   relation: violates, rationale: "Access enforcement continues to accept the superseded credential class."}
+      - {id: "SC-13",  relation: weakens,  rationale: "Strong cryptography is available but not required by the enforcement point."}
+      - {id: "RA-5",   relation: weakens,  rationale: "Remediation is deployed but not completed, so the vulnerability persists."}
+    remediation:
+      summary: "Complete the migration: disable legacy format acceptance reader by reader and evidence the date each was cut over."
+      steps:
+        - "Report legacy-format acceptance per reader and track it to zero as the migration metric."
+        - "Set a hard cutover date per zone and disable legacy acceptance on that date."
+        - "Verify by test presentation after cutover; a policy statement is not evidence."
+      priority: P1
+      effort: Low
+    references:
+      - "NIST SP 800-53 Rev. 5, CM-6 Configuration Settings."
+      - "NIST SP 800-116 Rev. 1, on phased migration of facility access credentials."
+
+# -----------------------------------------------------------------------------
+# Product generations with publicly broken proprietary cryptography.
+# Used by the classifier to raise W-BROKEN-CRYPTO from an identified device type.
+# -----------------------------------------------------------------------------
+broken_cipher_generations:
+  - device_type: "MIFARE Classic 1K/4K"
+    protocol: nfc_hf
+    cipher: "Crypto1 (proprietary, 48-bit)"
+    status: "Publicly broken; practical key recovery published 2008-2009."
+  - device_type: "HID iCLASS legacy"
+    protocol: nfc_hf
+    cipher: "Proprietary iCLASS cipher with a shared global key in the legacy standard configuration"
+    status: "Publicly broken; key recovery published 2012."
+  - device_type: "KeeLoq rolling-code remote"
+    protocol: subghz
+    cipher: "KeeLoq (proprietary block cipher)"
+    status: "Publicly broken; practical key recovery published 2007-2008."
+
+# -----------------------------------------------------------------------------
+# Zone sensitivity -> exposure multiplier, applied by src/policyprobe/score/risk.py
+# -----------------------------------------------------------------------------
+zone_sensitivity:
+  public:     {label: "Public / uncontrolled",        exposure: 0.4}
+  general:    {label: "General staff area",           exposure: 0.7}
+  restricted: {label: "Restricted (need-to-use)",     exposure: 1.0}
+  secure:     {label: "Secure (systems / records)",   exposure: 1.3}
+
+exposure_modifiers:
+  perimeter_facing:      {label: "Access point reachable from outside the perimeter", factor: 1.15}
+  unmonitored:           {label: "No video or guard coverage at the access point",    factor: 1.15}
+  high_traffic:          {label: "High-traffic point; credential frequently exposed", factor: 1.05}
+  compensating_second_factor: {label: "Second authentication factor enforced",        factor: 0.70}
+  compensating_escort:   {label: "Escorted entry enforced and logged",                factor: 0.80}

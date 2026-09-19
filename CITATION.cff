@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use PolicyProbe in your work, please cite it as below."
+title: "PolicyProbe: A Flipper-Driven Physical-Security Compliance Scanner Mapped to Control Frameworks"
+abstract: >-
+  PolicyProbe audits physical access-control technologies (RFID/NFC, sub-GHz, IR,
+  iButton/1-Wire) with a Flipper Zero front-end, classifies device types and weak
+  credential implementations, and maps each finding to the ISO/IEC 27001:2022 Annex A
+  and NIST SP 800-53 Rev. 5 controls it provides evidence against, producing an
+  audit-ready physical-security compliance report with a posture score, gap list and
+  remediation roadmap.
+type: software
+authors:
+  - family-names: "Choksi"
+    given-names: "Krishita Sanjay"
+    alias: "Krishita17"
+repository-code: "https://github.com/Krishita17/policy-probe"
+license: MIT
+version: "0.1.0"
+date-released: "2026-09-19"
+keywords:
+  - physical security
+  - compliance
+  - ISO 27001
+  - NIST SP 800-53
+  - Flipper Zero
+  - RFID
+  - GRC
+  - security audit

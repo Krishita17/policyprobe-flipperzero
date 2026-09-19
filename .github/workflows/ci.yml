@@ -1,0 +1,77 @@
+name: CI
+
+# PolicyProbe — Krishita Sanjay Choksi
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Validate the control mapping knowledge base
+        run: policyprobe validate
+
+      - name: Run tests
+        run: pytest -q
+
+  pipeline:
+    name: End-to-end pipeline (mock backend)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      # Proves the headline claim: the whole pipeline runs from a clean clone with no
+      # Flipper Zero attached. --quick skips only the noise sweep, which is a long
+      # retraining loop and not needed to prove the pipeline works.
+      - name: Generate, scan, map, evaluate, report
+        run: |
+          policyprobe data
+          policyprobe scan --backend mock
+          policyprobe map
+          policyprobe evaluate --quick
+          policyprobe figures
+          policyprobe report
+          policyprobe tables
+
+      - name: Upload generated artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: policyprobe-run
+          path: |
+            results/
+            figures/
+            reports/

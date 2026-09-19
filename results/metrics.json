@@ -1,0 +1,425 @@
+{
+  "policyprobe_version": "0.1.0",
+  "config": {
+    "frameworks": [
+      "iso27001",
+      "nist80053"
+    ],
+    "facility": {
+      "name": "Meridian House",
+      "sector": "Financial services",
+      "seed": 7,
+      "n_access_points": 28,
+      "credential_strength_mix": "mixed",
+      "protocol_diversity": 0.65,
+      "legacy_prevalence": 0.45,
+      "monitoring_maturity": 0.45
+    },
+    "scan": {
+      "backend": "mock",
+      "seed": 99,
+      "port": null
+    },
+    "classifier": {
+      "seed": 42,
+      "n_estimators": 300,
+      "threshold": 0.5,
+      "train_seed_range": [
+        100,
+        150
+      ]
+    },
+    "evaluation": {
+      "test_seed_range": [
+        500,
+        512
+      ],
+      "noise_levels": [
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        3.0
+      ]
+    }
+  },
+  "classifier": {
+    "device_accuracy": 0.6896,
+    "device_family_accuracy": 0.9979,
+    "n_device_classes": 17,
+    "n_device_families": 11,
+    "weakness_micro_precision": 0.9893,
+    "weakness_micro_recall": 0.9866,
+    "weakness_micro_f1": 0.988,
+    "weakness_macro_f1": 0.9887,
+    "per_weakness": {
+      "W-DEFAULT-KEYS": {
+        "support": 28,
+        "precision": 1.0,
+        "recall": 0.9643,
+        "f1": 0.9818
+      },
+      "W-FIXED-CODE-RF": {
+        "support": 22,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "W-IR-UNAUTH-CTRL": {
+        "support": 50,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "W-MIXED-MODE": {
+        "support": 22,
+        "precision": 1.0,
+        "recall": 0.9091,
+        "f1": 0.9524
+      },
+      "W-NO-CRYPTO": {
+        "support": 283,
+        "precision": 0.9577,
+        "recall": 0.9611,
+        "f1": 0.9594
+      },
+      "W-NO-MUTUAL-AUTH": {
+        "support": 266,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "W-ROLLING-REPLAY": {
+        "support": 40,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "W-SEQUENTIAL-ID": {
+        "support": 91,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "W-SMALL-NAMESPACE": {
+        "support": 82,
+        "precision": 1.0,
+        "recall": 0.9878,
+        "f1": 0.9939
+      },
+      "W-STATIC-ID": {
+        "support": 238,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "n_samples": 480
+  },
+  "top_features": [
+    [
+      "namespace_pressure",
+      0.1913
+    ],
+    [
+      "bit_length",
+      0.1669
+    ],
+    [
+      "response_us",
+      0.1583
+    ],
+    [
+      "seq_diff_variance",
+      0.1058
+    ],
+    [
+      "auth_rounds",
+      0.0677
+    ],
+    [
+      "proto_rfid_lf",
+      0.062
+    ],
+    [
+      "variable_bits",
+      0.0465
+    ],
+    [
+      "proto_nfc_hf",
+      0.0385
+    ],
+    [
+      "proto_ibutton",
+      0.0351
+    ],
+    [
+      "counter_step",
+      0.0253
+    ]
+  ],
+  "detection": {
+    "precision": 0.9939,
+    "recall": 0.9825,
+    "f1": 0.9881,
+    "tp": 1625,
+    "fp": 10,
+    "fn": 29,
+    "per_weakness": {
+      "W-BROKEN-CRYPTO": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 72,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-DEFAULT-KEYS": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 22,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-FIXED-CODE-RF": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 15,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-IR-UNAUTH-CTRL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 30,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-LEGACY-EOL": {
+        "precision": 1.0,
+        "recall": 0.7606,
+        "f1": 0.864,
+        "tp": 54,
+        "fp": 0,
+        "fn": 17
+      },
+      "W-MIXED-MODE": {
+        "precision": 1.0,
+        "recall": 0.8462,
+        "f1": 0.9167,
+        "tp": 11,
+        "fp": 0,
+        "fn": 2
+      },
+      "W-NO-CRYPTO": {
+        "precision": 0.9497,
+        "recall": 0.9742,
+        "f1": 0.9618,
+        "tp": 189,
+        "fp": 10,
+        "fn": 5
+      },
+      "W-NO-EVENT-LOG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 150,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-NO-MUTUAL-AUTH": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 208,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-NO-REVOCATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 183,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-NO-TAMPER": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 107,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-ROLLING-REPLAY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 32,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-SEQUENTIAL-ID": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 46,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-SHARED-CREDENTIAL": {
+        "precision": 1.0,
+        "recall": 0.9286,
+        "f1": 0.963,
+        "tp": 39,
+        "fp": 0,
+        "fn": 3
+      },
+      "W-SINGLE-FACTOR-HIGH": {
+        "precision": 1.0,
+        "recall": 0.977,
+        "f1": 0.9884,
+        "tp": 85,
+        "fp": 0,
+        "fn": 2
+      },
+      "W-SMALL-NAMESPACE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 53,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-STATIC-ID": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 168,
+        "fp": 0,
+        "fn": 0
+      },
+      "W-WIRE-CLEARTEXT": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 161,
+        "fp": 0,
+        "fn": 0
+      }
+    }
+  },
+  "control_assignment": {
+    "iso27001": {
+      "precision": 0.994,
+      "recall": 0.9741,
+      "f1": 0.984,
+      "tp": 1657,
+      "fp": 10,
+      "fn": 44
+    },
+    "nist80053": {
+      "precision": 0.9848,
+      "recall": 0.9818,
+      "f1": 0.9833,
+      "tp": 2586,
+      "fp": 40,
+      "fn": 48
+    },
+    "overall": {
+      "precision": 0.9884,
+      "recall": 0.9788,
+      "f1": 0.9835,
+      "tp": 4243,
+      "fp": 50,
+      "fn": 92
+    }
+  },
+  "posture_ordering": [
+    {
+      "profile": "Known weak",
+      "iso27001": 25.5,
+      "nist80053": 18.1,
+      "iso27001_estate": 55.5,
+      "nist80053_estate": 49.1
+    },
+    {
+      "profile": "Legacy mixed",
+      "iso27001": 25.5,
+      "nist80053": 18.1,
+      "iso27001_estate": 62.2,
+      "nist80053_estate": 58.5
+    },
+    {
+      "profile": "Modernising",
+      "iso27001": 25.5,
+      "nist80053": 18.1,
+      "iso27001_estate": 68.4,
+      "nist80053_estate": 65.3
+    },
+    {
+      "profile": "Known strong",
+      "iso27001": 32.7,
+      "nist80053": 23.2,
+      "iso27001_estate": 75.0,
+      "nist80053_estate": 73.1
+    }
+  ],
+  "posture_ordering_monotonic": {
+    "iso27001": true,
+    "nist80053": true
+  },
+  "noise_sweep": [
+    {
+      "noise_level": 0.0,
+      "device_accuracy": 0.9583,
+      "device_family_accuracy": 1.0,
+      "weakness_micro_f1": 0.9923,
+      "weakness_macro_f1": 0.997
+    },
+    {
+      "noise_level": 0.5,
+      "device_accuracy": 0.775,
+      "device_family_accuracy": 0.9958,
+      "weakness_micro_f1": 0.9923,
+      "weakness_macro_f1": 0.997
+    },
+    {
+      "noise_level": 1.0,
+      "device_accuracy": 0.7417,
+      "device_family_accuracy": 0.9958,
+      "weakness_micro_f1": 0.9908,
+      "weakness_macro_f1": 0.9896
+    },
+    {
+      "noise_level": 1.5,
+      "device_accuracy": 0.7542,
+      "device_family_accuracy": 0.9958,
+      "weakness_micro_f1": 0.9923,
+      "weakness_macro_f1": 0.9765
+    },
+    {
+      "noise_level": 2.0,
+      "device_accuracy": 0.7583,
+      "device_family_accuracy": 0.9958,
+      "weakness_micro_f1": 0.9892,
+      "weakness_macro_f1": 0.9699
+    },
+    {
+      "noise_level": 3.0,
+      "device_accuracy": 0.7042,
+      "device_family_accuracy": 0.9833,
+      "weakness_micro_f1": 0.9829,
+      "weakness_macro_f1": 0.9508
+    }
+  ],
+  "real_samples": null,
+  "knowledge_base": {
+    "weaknesses": 18,
+    "control_mappings": 129
+  }
+}

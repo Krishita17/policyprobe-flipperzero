@@ -1,0 +1,26 @@
+{
+  "sample_id": "own-em4100-01",
+  "device_type": "EM4100/EM4102",
+  "protocol": "rfid_lf",
+  "owned_by_author": true,
+  "captured_at": "2026-01-01T00:00:00+00:00",
+  "notes": "Blank development tag, purchased new. No facility association.",
+  "ground_truth_weaknesses": ["W-STATIC-ID", "W-NO-CRYPTO", "W-NO-MUTUAL-AUTH", "W-NO-REVOCATION"],
+  "payload": {
+    "reads": ["1a2b3c4d5e", "1a2b3c4d5e", "1a2b3c4d5e"],
+    "n_reads": 3,
+    "distinct_reads": 1,
+    "bit_length": 40,
+    "variable_bits_observed": 0,
+    "challenge_observed": 0,
+    "auth_rounds": 0,
+    "sak": 0,
+    "response_us": 1412.0,
+    "counter_step": -1,
+    "default_key_auth": -1,
+    "legacy_format_probe": 0,
+    "seq_first_diff_variance": -1.0,
+    "credential_population": 0,
+    "reader_interface": "native"
+  }
+}

@@ -1,0 +1,35 @@
+# PolicyProbe default configuration.
+#
+# Everything a run depends on is here, so `make all` from a clean clone reproduces the
+# figures, tables and report committed to the repository exactly.
+
+frameworks:
+  - iso27001        # ISO/IEC 27001:2022 Annex A
+  - nist80053       # NIST SP 800-53 Rev. 5
+
+# Synthetic facility used for the worked example in reports/.
+facility:
+  name: "Meridian House"
+  sector: "Financial services"
+  seed: 7
+  n_access_points: 28
+  credential_strength_mix: mixed      # weak | mixed | strong
+  protocol_diversity: 0.65            # 0-1; higher spreads more protocols across the site
+  legacy_prevalence: 0.45             # 0-1; end-of-life generations and legacy acceptance
+  monitoring_maturity: 0.45           # 0-1; tamper supervision, event logging, video
+
+scan:
+  backend: mock                       # mock | flipper-cli | real-samples
+  seed: 99
+  # Serial port for the flipper-cli backend, e.g. /dev/tty.usbmodemflip_Xxxxxxx or COM5.
+  port: null
+
+classifier:
+  seed: 42
+  n_estimators: 300
+  threshold: 0.5                      # minimum probability to raise an RF-probe flag
+  train_seed_range: [100, 150]        # facilities used for training
+
+evaluation:
+  test_seed_range: [500, 512]         # held-out facilities, disjoint from training
+  noise_levels: [0.0, 0.5, 1.0, 1.5, 2.0, 3.0]

@@ -1,0 +1,240 @@
+# ISO/IEC 27001:2022 — Annex A control reference (subset relevant to physical access technology)
+#
+# Control IDs and control TITLES are reproduced as published, because identifiers and short
+# titles are how practitioners refer to controls and are required for an audit trail.
+# The `intent` and `assessable_via_policyprobe` fields are PARAPHRASES written by the author of
+# this repository. No requirement text from the standard is reproduced verbatim. Purchase the
+# standard from ISO or your national standards body for the authoritative text.
+framework:
+  id: iso27001
+  name: "ISO/IEC 27001"
+  edition: "2022 (Annex A; control set aligned to ISO/IEC 27002:2022)"
+  publisher: "International Organization for Standardization / International Electrotechnical Commission"
+  citation: "ISO/IEC 27001:2022, Information security, cybersecurity and privacy protection — Information security management systems — Requirements, Annex A."
+  note: "Annex A of the 2022 edition restructures the 114 controls of the 2013 edition into 93 controls in four themes. Legacy 2013 identifiers are given as `legacy_2013` for organisations still certified against the previous edition."
+
+families:
+  "5": "Organizational controls"
+  "7": "Physical controls"
+  "8": "Technological controls"
+
+controls:
+  - id: "A.5.15"
+    title: "Access control"
+    family: "5"
+    legacy_2013: ["A.9.1.1", "A.9.1.2"]
+    intent: >-
+      Rules for physical and logical access to information and other assets are established on a
+      need-to-know / need-to-use basis and enforced consistently.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      PolicyProbe evidences the enforcement side only: whether the credential technology deployed at
+      a boundary is actually capable of distinguishing authorised from unauthorised holders. It
+      cannot evidence whether the written access rules exist or are correct.
+
+  - id: "A.5.16"
+    title: "Identity management"
+    family: "5"
+    legacy_2013: ["A.9.2.1"]
+    intent: >-
+      The full life cycle of identities is managed, and each identity is uniquely attributable to a
+      single person or entity.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      A credential whose identifier is sequential, duplicated across holders, or freely writable
+      undermines unique attribution; PolicyProbe can observe that property from the credential itself.
+
+  - id: "A.5.17"
+    title: "Authentication information"
+    family: "5"
+    legacy_2013: ["A.9.2.4", "A.9.3.1", "A.9.4.3"]
+    intent: >-
+      Allocation and handling of authentication secrets is controlled, and default or shared secrets
+      are not left in place.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Factory-default or publicly published sector keys on a contactless credential are directly
+      observable and are authentication-information failures.
+
+  - id: "A.5.18"
+    title: "Access rights"
+    family: "5"
+    legacy_2013: ["A.9.2.2", "A.9.2.5", "A.9.2.6"]
+    intent: >-
+      Access rights are provisioned, reviewed, modified and removed in line with the access control
+      policy, including prompt revocation on role change or exit.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Credential technologies with no revocation or expiry mechanism make this control unenforceable
+      at the technology layer regardless of process quality.
+
+  - id: "A.5.35"
+    title: "Independent review of information security"
+    family: "5"
+    legacy_2013: ["A.18.2.1"]
+    intent: >-
+      The organisation's approach to information security is reviewed independently at planned
+      intervals or after significant change.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      A completed PolicyProbe assessment is itself an artefact of independent technical review of the
+      physical access layer.
+
+  - id: "A.5.37"
+    title: "Documented operating procedures"
+    family: "5"
+    legacy_2013: ["A.12.1.1"]
+    intent: >-
+      Operating procedures for information processing facilities are documented and available to
+      those who need them.
+    assessable_via_policyprobe: no
+    evidence_note: "Out of scope: document review, not a technical probe."
+
+  - id: "A.7.1"
+    title: "Physical security perimeters"
+    family: "7"
+    legacy_2013: ["A.11.1.1"]
+    intent: >-
+      Security perimeters are defined and used to protect areas containing information and other
+      associated assets.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      PolicyProbe evidences whether the electronic boundary at a defined perimeter is technically
+      sound; it does not assess construction, walls, or perimeter definition itself.
+
+  - id: "A.7.2"
+    title: "Physical entry"
+    family: "7"
+    legacy_2013: ["A.11.1.2", "A.11.1.6"]
+    intent: >-
+      Secure areas are protected by entry controls and access points that permit entry only to
+      authorised personnel, including control of delivery and loading areas.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      This is PolicyProbe's primary control. Every credential-cloning, replay and weak-authentication
+      finding is direct evidence against the entry-control requirement at a named access point.
+
+  - id: "A.7.3"
+    title: "Securing offices, rooms and facilities"
+    family: "7"
+    legacy_2013: ["A.11.1.3"]
+    intent: >-
+      Physical security for offices, rooms and facilities is designed and applied appropriately to
+      their sensitivity.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Evidenced where a high-sensitivity room (server room, records room) is protected by a weaker
+      credential technology than the site perimeter — a sensitivity/strength mismatch.
+
+  - id: "A.7.4"
+    title: "Physical security monitoring"
+    family: "7"
+    legacy_2013: []
+    intent: >-
+      Premises are continuously monitored for unauthorised physical access.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      New in the 2022 edition. PolicyProbe evidences the absence of reader tamper detection and the
+      absence of access-event logging at an access point; it does not assess guards or CCTV coverage.
+
+  - id: "A.7.6"
+    title: "Working in secure areas"
+    family: "7"
+    legacy_2013: ["A.11.1.5"]
+    intent: >-
+      Security measures for working in secure areas are designed and applied.
+    assessable_via_policyprobe: no
+    evidence_note: "Out of scope: behavioural and procedural control."
+
+  - id: "A.7.9"
+    title: "Security of assets off-premises"
+    family: "7"
+    legacy_2013: ["A.11.2.6"]
+    intent: >-
+      Assets taken off site are protected commensurate with the risk of their location.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Relevant where credentials themselves leave the site: a cloneable credential in an employee's
+      wallet is an off-premises asset with no protection against duplication at a distance.
+
+  - id: "A.7.12"
+    title: "Cabling security"
+    family: "7"
+    legacy_2013: ["A.11.2.3"]
+    intent: >-
+      Cabling carrying power, data or supporting information services is protected from interception,
+      interference or damage.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Reader-to-controller wiring that carries credential data unauthenticated and in the clear is a
+      cabling-security exposure at any point the cable is reachable (e.g. the unsecure side of a door).
+
+  - id: "A.7.13"
+    title: "Equipment maintenance"
+    family: "7"
+    legacy_2013: ["A.11.2.4"]
+    intent: >-
+      Equipment is maintained correctly so that availability, integrity and confidentiality are
+      preserved — which includes keeping firmware and supported product generations current.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      End-of-life reader or credential generations that the vendor no longer issues security fixes for
+      are observable from the technology identified.
+
+  - id: "A.8.5"
+    title: "Secure authentication"
+    family: "8"
+    legacy_2013: ["A.9.4.2"]
+    intent: >-
+      Secure authentication technologies and procedures are implemented, appropriate to the
+      classification of what is being protected.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Directly evidenced: a credential exchange with no cryptographic authentication, or one using a
+      broken cipher, is not secure authentication.
+
+  - id: "A.8.8"
+    title: "Management of technical vulnerabilities"
+    family: "8"
+    legacy_2013: ["A.12.6.1", "A.18.2.3"]
+    intent: >-
+      Technical vulnerabilities in systems in use are identified, evaluated and addressed.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Publicly known, unremediated weaknesses in a deployed credential technology are technical
+      vulnerabilities in the physical access system and belong in the same register as software CVEs.
+
+  - id: "A.8.15"
+    title: "Logging"
+    family: "8"
+    legacy_2013: ["A.12.4.1", "A.12.4.2", "A.12.4.3"]
+    intent: >-
+      Logs recording activities, exceptions and faults are produced, stored, protected and analysed.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      An access point with no controller-side event record (standalone keypad, standalone gate
+      receiver) cannot produce access logs at all.
+
+  - id: "A.8.16"
+    title: "Monitoring activities"
+    family: "8"
+    legacy_2013: []
+    intent: >-
+      Networks, systems and applications are monitored for anomalous behaviour and appropriate action
+      is taken.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Evidenced by the absence of duplicate-credential, anti-passback or impossible-travel detection
+      on the access control platform.
+
+  - id: "A.8.34"
+    title: "Protection of information systems during audit testing"
+    family: "8"
+    legacy_2013: ["A.12.7.1"]
+    intent: >-
+      Audit tests and other assurance activities involving operational systems are planned and agreed
+      so that they do not disrupt those systems.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Satisfied by PolicyProbe's own rules of engagement: scoped authorisation, read/observe-first
+      test selection, and no destructive tests. See docs/threat_model.md.

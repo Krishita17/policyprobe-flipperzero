@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "policyprobe"
+version = "0.1.0"
+description = "A Flipper-driven physical-security compliance scanner mapped to ISO/IEC 27001 and NIST SP 800-53 controls"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Krishita Sanjay Choksi" }]
+maintainers = [{ name = "Krishita Sanjay Choksi" }]
+keywords = ["physical-security", "compliance", "iso27001", "nist-800-53", "flipper-zero", "rfid", "grc"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Security",
+]
+dependencies = [
+  "PyYAML>=6.0",
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "matplotlib>=3.8",
+  "scikit-learn>=1.4",
+  "Jinja2>=3.1",
+  "pyserial>=3.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+policyprobe = "policyprobe.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Krishita17/policy-probe"
+Repository = "https://github.com/Krishita17/policy-probe"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]

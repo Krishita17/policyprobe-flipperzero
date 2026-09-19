@@ -1,0 +1,312 @@
+# NIST SP 800-53 Revision 5 — control reference (PE family in full, plus cross-family controls
+# that physical credential findings routinely touch)
+#
+# NIST SP 800-53 is a US Government publication and is not subject to copyright in the United States.
+# Control identifiers and titles are reproduced as published. The `intent` text is a PARAPHRASE
+# written by the author of this repository, not the control statement from the publication; consult
+# the source document for authoritative control and discussion text.
+framework:
+  id: nist80053
+  name: "NIST SP 800-53"
+  edition: "Revision 5 (with updates through Release 5.1.1)"
+  publisher: "National Institute of Standards and Technology, U.S. Department of Commerce"
+  citation: "Joint Task Force, Security and Privacy Controls for Information Systems and Organizations, NIST SP 800-53 Rev. 5, National Institute of Standards and Technology, Gaithersburg, MD, 2020 (updated 2023). https://doi.org/10.6028/NIST.SP.800-53r5"
+  companion: "Baseline allocations (low/moderate/high) are defined in NIST SP 800-53B."
+
+families:
+  PE: "Physical and Environmental Protection"
+  AC: "Access Control"
+  IA: "Identification and Authentication"
+  AU: "Audit and Accountability"
+  CA: "Assessment, Authorization, and Monitoring"
+  RA: "Risk Assessment"
+  SC: "System and Communications Protection"
+  SI: "System and Information Integrity"
+  CM: "Configuration Management"
+
+controls:
+  - id: "PE-2"
+    title: "Physical Access Authorizations"
+    family: "PE"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      The organisation maintains a current list of individuals authorised for facility access, issues
+      credentials on that basis, reviews the list periodically, and removes individuals who no longer
+      require access.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      A credential that cannot be uniquely attributed, revoked or expired makes the authorisation list
+      unenforceable in practice, even when the list itself is well maintained.
+
+  - id: "PE-3"
+    title: "Physical Access Control"
+    family: "PE"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Physical access at entry and exit points is enforced by verifying individual authorisation before
+      granting access and by controlling entry with physical access control systems or devices; access
+      is logged and keys/combinations/credentials are inventoried and changed when compromised.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      PolicyProbe's principal control. A credential that a third party can reproduce from a passive read
+      defeats the verification step this control requires.
+
+  - id: "PE-3(1)"
+    title: "Physical Access Control | System Access"
+    family: "PE"
+    baseline: ["high"]
+    intent: >-
+      Physical access to the spaces containing the system's own components is enforced in addition to
+      facility-level access control.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Evidenced where a data centre, server room or comms room is protected by a credential technology
+      no stronger than the building's front door.
+
+  - id: "PE-3(5)"
+    title: "Physical Access Control | Tamper Protection"
+    family: "PE"
+    baseline: []
+    intent: >-
+      Tamper protection or detection is employed on system hardware components, including at the point
+      where access hardware could be manipulated.
+    assessable_via_policyprobe: partial
+    evidence_note: "Evidenced by a reader with no tamper switch or no tamper-event reporting path."
+
+  - id: "PE-4"
+    title: "Access Control for Transmission"
+    family: "PE"
+    baseline: ["moderate", "high"]
+    intent: >-
+      Physical access to transmission lines carrying system data is controlled to prevent eavesdropping,
+      in-line modification or disruption.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Reader-to-controller wiring carrying unauthenticated credential data is exactly such a transmission
+      line; its exposure on the unsecure side of a door is assessable.
+
+  - id: "PE-5"
+    title: "Access Control for Output Devices"
+    family: "PE"
+    baseline: ["moderate", "high"]
+    intent: >-
+      Physical access to output devices is controlled so that unauthorised individuals cannot obtain the
+      output.
+    assessable_via_policyprobe: no
+    evidence_note: "Out of scope for credential probing."
+
+  - id: "PE-6"
+    title: "Monitoring Physical Access"
+    family: "PE"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Physical access to the facility is monitored to detect and respond to physical security incidents,
+      access logs are reviewed, and incident response is coordinated.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Evidenced where an access point produces no event record, or where the platform performs no
+      duplicate-credential or anomalous-use detection on the records it does produce.
+
+  - id: "PE-6(1)"
+    title: "Monitoring Physical Access | Intrusion Alarms and Surveillance Equipment"
+    family: "PE"
+    baseline: ["moderate", "high"]
+    intent: >-
+      Physical access monitoring is supported by intrusion alarms and surveillance equipment.
+    assessable_via_policyprobe: no
+    evidence_note: "Requires site survey of alarm and camera coverage; outside the probe's data."
+
+  - id: "PE-6(4)"
+    title: "Monitoring Physical Access | Monitoring Physical Access to Systems"
+    family: "PE"
+    baseline: ["high"]
+    intent: >-
+      Physical access is monitored specifically at the spaces housing system components, not only at the
+      facility boundary.
+    assessable_via_policyprobe: partial
+    evidence_note: "Evidenced where interior technical spaces have no separate, logged access point."
+
+  - id: "PE-8"
+    title: "Visitor Access Records"
+    family: "PE"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Visitor access records for the facility are maintained for a defined period and reviewed.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Reusable, unattributed visitor credentials (a pool of identical fobs) make the record unable to tie
+      an entry event to a visitor.
+
+  - id: "PE-16"
+    title: "Delivery and Removal"
+    family: "PE"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Delivery and removal of system components from the facility is authorised, monitored and recorded,
+      and such areas are isolated from the interior.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Loading-dock roller doors on fixed-code sub-GHz receivers are a common unmonitored bypass of this
+      control.
+
+  - id: "PE-18"
+    title: "Location of System Components"
+    family: "PE"
+    baseline: ["high"]
+    intent: >-
+      System components are positioned within the facility to minimise potential damage from physical
+      and environmental hazards and to minimise the opportunity for unauthorised access.
+    assessable_via_policyprobe: partial
+    evidence_note: >-
+      Relevant where an access-relevant device is sited so that it can be reached, observed or
+      commanded from outside the boundary it is meant to protect (line-of-sight IR, reader reachable
+      from the unsecure side).
+
+  - id: "PE-20"
+    title: "Asset Monitoring and Tracking"
+    family: "PE"
+    baseline: []
+    intent: >-
+      Asset location technologies are used to track and monitor the location and movement of assets.
+    assessable_via_policyprobe: no
+    evidence_note: "Out of scope."
+
+  - id: "AC-2"
+    title: "Account Management"
+    family: "AC"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Accounts — including the badge-holder records in a physical access control system — are created,
+      enabled, modified, reviewed, disabled and removed under defined conditions.
+    assessable_via_policyprobe: partial
+    evidence_note: "Duplicate or non-unique credential identifiers break one-account-per-person integrity."
+
+  - id: "AC-3"
+    title: "Access Enforcement"
+    family: "AC"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Approved authorisations are enforced for logical and physical access in accordance with applicable
+      policy.
+    assessable_via_policyprobe: yes
+    evidence_note: "A bypassable or replayable access point is an enforcement failure by definition."
+
+  - id: "IA-2"
+    title: "Identification and Authentication (Organizational Users)"
+    family: "IA"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Users are uniquely identified and authenticated before access is granted, with multi-factor
+      authentication where the risk warrants it.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Single-factor possession of a copyable token at a high-sensitivity boundary is the classic finding
+      against this control.
+
+  - id: "IA-3"
+    title: "Device Identification and Authentication"
+    family: "IA"
+    baseline: ["moderate", "high"]
+    intent: >-
+      Devices are uniquely identified and authenticated before a connection is established.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      A reader that accepts any credential presenting a well-formed identifier, without authenticating
+      the credential device itself, fails this control.
+
+  - id: "IA-5"
+    title: "Authenticator Management"
+    family: "IA"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Authenticators are issued, distributed, protected, changed from defaults, refreshed and revoked
+      under organisational control.
+    assessable_via_policyprobe: yes
+    evidence_note: "Default or published keys left in place on a credential are a direct failure."
+
+  - id: "AU-2"
+    title: "Event Logging"
+    family: "AU"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      The organisation identifies the events it needs logged and ensures the system is capable of logging
+      them.
+    assessable_via_policyprobe: partial
+    evidence_note: "A standalone access device with no logging capability cannot meet this control."
+
+  - id: "AU-6"
+    title: "Audit Record Review, Analysis, and Reporting"
+    family: "AU"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Audit records are reviewed and analysed for indications of inappropriate or unusual activity and
+      findings are reported.
+    assessable_via_policyprobe: partial
+    evidence_note: "Evidenced by absence of duplicate-badge or impossible-travel analytics."
+
+  - id: "CA-8"
+    title: "Penetration Testing"
+    family: "CA"
+    baseline: ["high"]
+    intent: >-
+      Penetration testing is conducted at a defined frequency on identified systems or components.
+    assessable_via_policyprobe: yes
+    evidence_note: "A completed, authorised PolicyProbe assessment is an artefact satisfying this control."
+
+  - id: "RA-5"
+    title: "Vulnerability Monitoring and Scanning"
+    family: "RA"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Systems are monitored and scanned for vulnerabilities at a defined frequency, and discovered
+      vulnerabilities are remediated within defined timeframes.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      PolicyProbe extends vulnerability scanning to the physical access layer, which conventional network
+      scanners never reach.
+
+  - id: "SC-8"
+    title: "Transmission Confidentiality and Integrity"
+    family: "SC"
+    baseline: ["moderate", "high"]
+    intent: >-
+      The confidentiality and integrity of transmitted information is protected, typically by
+      cryptographic means.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Applies both over the air (credential-to-reader) and over the wire (reader-to-controller) in a
+      physical access system.
+
+  - id: "SC-13"
+    title: "Cryptographic Protection"
+    family: "SC"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Cryptographic uses are identified and implemented with algorithms and key management that meet
+      applicable standards.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Proprietary broken ciphers in credential technologies are non-conforming cryptography in an
+      access-relevant system.
+
+  - id: "SI-4"
+    title: "System Monitoring"
+    family: "SI"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      The system is monitored to detect attacks and indicators of potential attacks, and unauthorised
+      connections are identified.
+    assessable_via_policyprobe: partial
+    evidence_note: "Reader tamper and duplicate-credential signals are the physical-layer equivalent."
+
+  - id: "CM-6"
+    title: "Configuration Settings"
+    family: "CM"
+    baseline: ["low", "moderate", "high"]
+    intent: >-
+      Secure configuration settings are established, documented, implemented and monitored for
+      deviations.
+    assessable_via_policyprobe: yes
+    evidence_note: >-
+      Readers left in a permissive default mode (legacy credential formats enabled alongside secure ones)
+      are configuration deviations.

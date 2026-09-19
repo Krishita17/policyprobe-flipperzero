@@ -1,0 +1,15 @@
+graph LR
+    A["Physical access technologies<br/>(owned or authorised)"] <--> B["Flipper Zero<br/>multi-protocol front-end<br/>RFID/NFC · sub-GHz · IR · 1-Wire"]
+    B <--> C["Bridge<br/>serial CLI / mock backend"]
+    C --> D["Finding normalizer<br/>common finding schema"]
+    E["Device &amp; weakness classifier<br/>generation ID · weak-scheme flags"] --> D
+    D --> F["Risk scorer<br/>severity × exposure"]
+    F --> G["CONTROL MAPPING ENGINE<br/>finding → framework control"]
+    H["Control framework KB<br/>ISO/IEC 27001:2022 Annex A<br/>NIST SP 800-53 Rev. 5"] --> G
+    G --> I["Compliance report<br/>posture score · gap list<br/>evidence · remediation roadmap"]
+    G --> J["Figures, metrics,<br/>framework crosswalk"]
+
+    style G fill:#1f4e79,stroke:#1f4e79,color:#ffffff
+    style I fill:#e7f1e9,stroke:#4c9a5b
+    style B fill:#e7eef6,stroke:#1f4e79
+    style H fill:#eef3f8,stroke:#1f4e79

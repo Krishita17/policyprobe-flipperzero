@@ -1,0 +1,838 @@
+[
+  {
+    "access_point_id": "AP-001",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "617901676b1b69:9974333824fe",
+        "617901676b1b69:3af22dc5fd3d",
+        "617901676b1b69:221c3f9931ee"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 749.6,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 1,
+      "seq_first_diff_variance": 2131.331,
+      "credential_population": 2356,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-002",
+    "protocol": "rfid_lf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "273eee9",
+        "273eee9",
+        "273eee9"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 26,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 24,
+      "sak": 0,
+      "response_us": 1999.4,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 1.349,
+      "credential_population": 522,
+      "reader_interface": "wiegand",
+      "device_type_truth": "Indala 26-bit"
+    }
+  },
+  {
+    "access_point_id": "AP-003",
+    "protocol": "subghz",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "26fb984f366c5acd:7623c4dd",
+        "26fb984f366c5acd:a91afa5c",
+        "26fb984f366c5acd:2dd301c8"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 66,
+      "variable_bits_observed": 32,
+      "challenge_observed": 0,
+      "auth_rounds": 1,
+      "cipher_class": 1,
+      "namespace_bits": 28,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": 1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 3881.389,
+      "credential_population": 297,
+      "reader_interface": "native",
+      "device_type_truth": "KeeLoq rolling-code remote"
+    }
+  },
+  {
+    "access_point_id": "AP-004",
+    "protocol": "subghz",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "50fe32817812f170:67124890",
+        "50fe32817812f170:aeb34f9",
+        "50fe32817812f170:44f758cd"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 66,
+      "variable_bits_observed": 32,
+      "challenge_observed": 0,
+      "auth_rounds": 1,
+      "cipher_class": 1,
+      "namespace_bits": 28,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": 1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 440.849,
+      "credential_population": 1521,
+      "reader_interface": "native",
+      "device_type_truth": "KeeLoq rolling-code remote"
+    }
+  },
+  {
+    "access_point_id": "AP-005",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "e6764684c69290:9b0232b55d35",
+        "e6764684c69290:fa0976738966",
+        "e6764684c69290:5b860d2329d9"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 667.4,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 4627.241,
+      "credential_population": 523,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-006",
+    "protocol": "ir",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "2d78dc4b",
+        "2d78dc4b",
+        "2d78dc4b"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 32,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": -1,
+      "seq_first_diff_variance": 155.587,
+      "credential_population": 1325,
+      "reader_interface": "native",
+      "device_type_truth": "IR barrier release"
+    }
+  },
+  {
+    "access_point_id": "AP-007",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "af11c179462a34:6b45d1d5c42f",
+        "af11c179462a34:efca14c6e95e",
+        "af11c179462a34:a1cb6ce8571b"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 1001.4,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 314.784,
+      "credential_population": 2407,
+      "reader_interface": "osdp_secure_channel",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-008",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "7166a936209dbc",
+        "7166a936209dbc",
+        "7166a936209dbc"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 56,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 56,
+      "sak": 0,
+      "response_us": 507.3,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 0.694,
+      "credential_population": 1641,
+      "reader_interface": "osdp",
+      "device_type_truth": "NTAG21x"
+    }
+  },
+  {
+    "access_point_id": "AP-009",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "bd11e121846d9e",
+        "bd11e121846d9e",
+        "bd11e121846d9e"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 56,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 56,
+      "sak": 0,
+      "response_us": 354.7,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 0.849,
+      "credential_population": 379,
+      "reader_interface": "wiegand",
+      "device_type_truth": "NTAG21x"
+    }
+  },
+  {
+    "access_point_id": "AP-010",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "4bc4f0a024c70f48:fdba2c941da5",
+        "4bc4f0a024c70f48:68ed2d7a2d12",
+        "4bc4f0a024c70f48:ec9425403cfd"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 64,
+      "variable_bits_observed": 64,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 64,
+      "sak": 32,
+      "response_us": 993.0,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 621.378,
+      "credential_population": 2151,
+      "reader_interface": "wiegand",
+      "device_type_truth": "HID Seos"
+    }
+  },
+  {
+    "access_point_id": "AP-011",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "5c988ad2856dcb:ada62f9a8bcb",
+        "5c988ad2856dcb:805012881d4e",
+        "5c988ad2856dcb:2da49a7a4bf"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 0,
+      "response_us": 809.2,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 1,
+      "seq_first_diff_variance": 2690.465,
+      "credential_population": 895,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-012",
+    "protocol": "rfid_lf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "e12e64ca6e"
+      ],
+      "n_reads": 1,
+      "distinct_reads": 1,
+      "bit_length": 40,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 40,
+      "sak": 0,
+      "response_us": 1524.0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 1.038,
+      "credential_population": 1073,
+      "reader_interface": "osdp",
+      "device_type_truth": "EM4100/EM4102"
+    }
+  },
+  {
+    "access_point_id": "AP-013",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "a78270da845a33:a74239de23c8",
+        "a78270da845a33:4f87b84fbdd9",
+        "a78270da845a33:dfcd1b12590a"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 800.6,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 1,
+      "seq_first_diff_variance": 1942.431,
+      "credential_population": 2154,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-014",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "c062b67028fbe5:1483f5870b9f",
+        "c062b67028fbe5:7014e1ecfcf8",
+        "c062b67028fbe5:f6bc6bcdcf54"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 839.4,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 4484.226,
+      "credential_population": 1109,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-015",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "e1af27306e50e655:4a",
+        "e1af27306e50e655:68",
+        "e1af27306e50e655:f7"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 64,
+      "variable_bits_observed": 8,
+      "challenge_observed": 1,
+      "auth_rounds": 1,
+      "cipher_class": 1,
+      "namespace_bits": 64,
+      "sak": 32,
+      "response_us": 843.5,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 4936.971,
+      "credential_population": 968,
+      "reader_interface": "wiegand",
+      "device_type_truth": "HID iCLASS legacy"
+    }
+  },
+  {
+    "access_point_id": "AP-016",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "b6fed1aab2348c:31c870a758d3",
+        "b6fed1aab2348c:563b613c2e38",
+        "b6fed1aab2348c:3299e331f1f5"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 779.6,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 3214.719,
+      "credential_population": 1471,
+      "reader_interface": "osdp_secure_channel",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-017",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "6aadafa83c11d2",
+        "6aadafa83c11d2",
+        "6aadafa83c11d2"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 56,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 56,
+      "sak": 0,
+      "response_us": 356.4,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 0.772,
+      "credential_population": 531,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE Ultralight"
+    }
+  },
+  {
+    "access_point_id": "AP-018",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "806c8b1cc1ccd6:33d68820aa64",
+        "806c8b1cc1ccd6:85a80054b3fa",
+        "806c8b1cc1ccd6:f32c4f7f3536"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 993.9,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 1058.271,
+      "credential_population": 736,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-019",
+    "protocol": "ir",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "bfa2bcd3",
+        "bfa2bcd3",
+        "bfa2bcd3"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 32,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 3144.844,
+      "credential_population": 98,
+      "reader_interface": "native",
+      "device_type_truth": "IR device in secure area"
+    }
+  },
+  {
+    "access_point_id": "AP-020",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "a1b6c6c4929027:c3d9d49db22d",
+        "a1b6c6c4929027:c4d99b1ec183",
+        "a1b6c6c4929027:33454999d6f0"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 48,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 907.1,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 1,
+      "seq_first_diff_variance": 2803.854,
+      "credential_population": 2269,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-021",
+    "protocol": "ibutton",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "f2c4",
+        "f2c4",
+        "f2c4"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 16,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 2464.7,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 1.646,
+      "credential_population": 661,
+      "reader_interface": "native",
+      "device_type_truth": "Cyfral"
+    }
+  },
+  {
+    "access_point_id": "AP-022",
+    "protocol": "ir",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "65088190",
+        "65088190",
+        "65088190"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 32,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 677.205,
+      "credential_population": 532,
+      "reader_interface": "native",
+      "device_type_truth": "IR barrier release"
+    }
+  },
+  {
+    "access_point_id": "AP-023",
+    "protocol": "subghz",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "21732b",
+        "21732b",
+        "21732b"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 24,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 20,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": 0,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 2826.939,
+      "credential_population": 1057,
+      "reader_interface": "native",
+      "device_type_truth": "Fixed-code OOK remote"
+    }
+  },
+  {
+    "access_point_id": "AP-024",
+    "protocol": "rfid_lf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "2dc346e",
+        "2dc346e",
+        "2dc346e"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 26,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 24,
+      "sak": 0,
+      "response_us": 2037.8,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 0.246,
+      "credential_population": 2137,
+      "reader_interface": "osdp",
+      "device_type_truth": "Indala 26-bit"
+    }
+  },
+  {
+    "access_point_id": "AP-025",
+    "protocol": "ir",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "61f5a13e",
+        "61f5a13e",
+        "61f5a13e"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 32,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 2881.076,
+      "credential_population": 2331,
+      "reader_interface": "native",
+      "device_type_truth": "IR device in secure area"
+    }
+  },
+  {
+    "access_point_id": "AP-026",
+    "protocol": "ir",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "a037cd69",
+        "a037cd69",
+        "a037cd69"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 1,
+      "bit_length": 32,
+      "variable_bits_observed": 0,
+      "challenge_observed": 0,
+      "auth_rounds": 0,
+      "cipher_class": 0,
+      "namespace_bits": 16,
+      "sak": 0,
+      "response_us": 0,
+      "counter_step": -1,
+      "default_key_auth": -1,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 410.737,
+      "credential_population": 672,
+      "reader_interface": "native",
+      "device_type_truth": "IR barrier release"
+    }
+  },
+  {
+    "access_point_id": "AP-027",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "ff477d3d54a854:85ee75ba2d1b",
+        "ff477d3d54a854:1d6703f21ae3",
+        "ff477d3d54a854:cbd7546a4231"
+      ],
+      "n_reads": 3,
+      "distinct_reads": 3,
+      "bit_length": 56,
+      "variable_bits_observed": 56,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 32,
+      "response_us": 774.6,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": 0,
+      "seq_first_diff_variance": 3182.197,
+      "credential_population": 2151,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  },
+  {
+    "access_point_id": "AP-028",
+    "protocol": "nfc_hf",
+    "backend": "mock",
+    "timestamp": "2026-09-19T23:50:50+00:00",
+    "payload": {
+      "reads": [
+        "51af94953bd742:42f469f7e5e0"
+      ],
+      "n_reads": 1,
+      "distinct_reads": 1,
+      "bit_length": 56,
+      "variable_bits_observed": 0,
+      "challenge_observed": 1,
+      "auth_rounds": 3,
+      "cipher_class": 2,
+      "namespace_bits": 56,
+      "sak": 8,
+      "response_us": 731.8,
+      "counter_step": -1,
+      "default_key_auth": 0,
+      "legacy_format_probe": -1,
+      "seq_first_diff_variance": 3884.153,
+      "credential_population": 303,
+      "reader_interface": "wiegand",
+      "device_type_truth": "MIFARE DESFire EV2/EV3"
+    }
+  }
+]
