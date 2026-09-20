@@ -379,7 +379,7 @@ def cmd_all(args) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="policyprobe",
-        description="Flipper-driven physical-security compliance scanner mapped to "
+        description="Flipper Zero physical-security compliance scanner mapped to "
                     "ISO/IEC 27001 and NIST SP 800-53 controls.",
     )
     parser.add_argument("--version", action="version", version=f"PolicyProbe {__version__}")

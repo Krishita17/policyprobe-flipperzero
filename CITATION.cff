@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use PolicyProbe in your work, please cite it as below."
-title: "PolicyProbe: A Flipper-Driven Physical-Security Compliance Scanner Mapped to Control Frameworks"
+title: "PolicyProbe: A Flipper Zero Physical-Security Compliance Scanner Mapped to Control Frameworks"
 abstract: >-
   PolicyProbe audits physical access-control technologies (RFID/NFC, sub-GHz, IR,
   iButton/1-Wire) with a Flipper Zero front-end, classifies device types and weak

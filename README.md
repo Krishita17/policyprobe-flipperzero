@@ -1,10 +1,12 @@
-# PolicyProbe
+# PolicyProbe — Flipper Zero Physical-Security Compliance Scanner
 
-**A Flipper-driven physical-security compliance scanner mapped to control frameworks.**
+**Audit the access technologies in a building with a Flipper Zero. Get back a compliance
+report mapped to ISO/IEC 27001 and NIST SP 800-53 controls.**
 
-A physical-security auditor that tests the access technologies in a space with a Flipper
-Zero and produces a compliance report mapped to ISO/IEC 27001 and NIST SP 800-53 controls —
-welding hardware RF auditing to a formal control framework.
+A physical-security auditor that probes RFID/NFC, sub-GHz, IR and iButton/1-Wire access
+control with a Flipper Zero, classifies what it finds, and maps every finding to the
+specific framework control it provides evidence against — welding hardware RF auditing to a
+formal control framework.
 
 Author: **Krishita Sanjay Choksi** · MIT licensed · [Threat model and scope](docs/threat_model.md)
 
@@ -513,7 +515,7 @@ policy-probe/
 
 See [`CITATION.cff`](CITATION.cff).
 
-> Choksi, Krishita Sanjay. *PolicyProbe: A Flipper-Driven Physical-Security Compliance
+> Choksi, Krishita Sanjay. *PolicyProbe: A Flipper Zero Physical-Security Compliance
 > Scanner Mapped to Control Frameworks.* 2026. https://github.com/Krishita17/policy-probe
 
 ## References

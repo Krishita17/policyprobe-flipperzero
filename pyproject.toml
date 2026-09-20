@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "policyprobe"
 version = "0.1.0"
-description = "A Flipper-driven physical-security compliance scanner mapped to ISO/IEC 27001 and NIST SP 800-53 controls"
+description = "A Flipper Zero physical-security compliance scanner mapped to ISO/IEC 27001 and NIST SP 800-53 controls"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

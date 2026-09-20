@@ -1,4 +1,4 @@
-"""PolicyProbe — a Flipper-driven physical-security compliance scanner mapped to control frameworks.
+"""PolicyProbe — a Flipper Zero physical-security compliance scanner mapped to control frameworks.
 
 The package is organised as a pipeline:
 
