@@ -302,8 +302,8 @@ Prerequisites: Python 3.10 or newer, and `git`. A Flipper Zero is **optional** �
 in this README is produced without one.
 
 ```bash
-git clone https://github.com/Krishita17/policy-probe.git
-cd policy-probe
+git clone https://github.com/Krishita17/policyprobe-flipperzero.git
+cd policyprobe-flipperzero
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -491,7 +491,7 @@ assessment are in [`docs/threat_model.md`](docs/threat_model.md).
 ## Repository layout
 
 ```
-policy-probe/
+policyprobe-flipperzero/
 ├── config/            run configuration (all seeds live here)
 ├── frameworks/        ISO/IEC 27001:2022 and NIST SP 800-53 Rev. 5 control references
 ├── mappings/          the protocol → weakness → control knowledge base
@@ -516,7 +516,7 @@ policy-probe/
 See [`CITATION.cff`](CITATION.cff).
 
 > Choksi, Krishita Sanjay. *PolicyProbe: A Flipper Zero Physical-Security Compliance
-> Scanner Mapped to Control Frameworks.* 2026. https://github.com/Krishita17/policy-probe
+> Scanner Mapped to Control Frameworks.* 2026. https://github.com/Krishita17/policyprobe-flipperzero
 
 ## References
 

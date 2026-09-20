@@ -36,8 +36,8 @@ dev = ["pytest>=8.0"]
 policyprobe = "policyprobe.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/Krishita17/policy-probe"
-Repository = "https://github.com/Krishita17/policy-probe"
+Homepage = "https://github.com/Krishita17/policyprobe-flipperzero"
+Repository = "https://github.com/Krishita17/policyprobe-flipperzero"
 
 [tool.setuptools.packages.find]
 where = ["src"]
